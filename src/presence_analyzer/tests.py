@@ -6,7 +6,6 @@ import os.path
 import json
 import datetime
 import unittest
-import calendar
 
 from presence_analyzer import main, views, utils
 
@@ -69,8 +68,15 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 7)
-        correct_data = [[u'Mon', 0], [u'Tue', 30047], [u'Wed', 24465],
-                        [u'Thu', 23705], [u'Fri', 0], [u'Sat', 0], [u'Sun', 0]]
+        correct_data = [
+            [u'Mon', 0],
+            [u'Tue', 30047],
+            [u'Wed', 24465],
+            [u'Thu', 23705],
+            [u'Fri', 0],
+            [u'Sat', 0],
+            [u'Sun', 0]
+        ]
         self.assertEqual(data, correct_data)
 
     def test_api_presence_weekday_view(self):
@@ -88,9 +94,16 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 8)
-        correct_data = [[u'Weekday', u'Presence (s)'], [u'Mon', 0],
-                        [u'Tue', 30047], [u'Wed', 24465], [u'Thu', 23705],
-                        [u'Fri', 0], [u'Sat', 0], [u'Sun', 0]]
+        correct_data = [
+            [u'Weekday', u'Presence (s)'],
+            [u'Mon', 0],
+            [u'Tue', 30047],
+            [u'Wed', 24465],
+            [u'Thu', 23705],
+            [u'Fri', 0],
+            [u'Sat', 0],
+            [u'Sun', 0]
+        ]
         self.assertEqual(data, correct_data)
 
 
