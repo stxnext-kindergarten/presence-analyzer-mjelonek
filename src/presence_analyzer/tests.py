@@ -6,6 +6,7 @@ import os.path
 import json
 import datetime
 import unittest
+import calendar
 
 from presence_analyzer import main, views, utils
 
@@ -53,6 +54,52 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
+    def test_api_mean_time_weekday(self):
+        """
+        Test mean user time grouped by weekday.
+        """
+        resp = self.client.get('/api/v1/mean_time_weekday/5')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(data, [])
+
+        resp = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertEqual(data[0], [u'Mon', 0])
+        self.assertEqual(data[1], [u'Tue', 30047])
+        self.assertEqual(data[2], [u'Wed', 24465])
+        self.assertEqual(data[3], [u'Thu', 23705])
+        self.assertEqual(data[4], [u'Fri', 0])
+        self.assertEqual(data[5], [u'Sat', 0])
+        self.assertEqual(data[6], [u'Sun', 0])
+
+    def test_api_presence_weekday_view(self):
+        """
+        Test total user presence time grouped by weekday.
+        """
+        resp = self.client.get('/api/v1/mean_time_weekday/5')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(data, [])
+
+        resp = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        self.assertEqual(data[0], [u'Mon', 0])
+        self.assertEqual(data[1], [u'Tue', 30047])
+        self.assertEqual(data[2], [u'Wed', 24465])
+        self.assertEqual(data[3], [u'Thu', 23705])
+        self.assertEqual(data[4], [u'Fri', 0])
+        self.assertEqual(data[5], [u'Sat', 0])
+        self.assertEqual(data[6], [u'Sun', 0])
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
@@ -83,6 +130,57 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
+
+    def test_seconds_since_midnight(self):
+        """
+        Test seconds since midnight.
+        """
+        seconds = utils.seconds_since_midnight(datetime.time(1, 0, 15))
+        self.assertEqual(seconds, 3615)
+
+    def test_interval(self):
+        """
+        Test interval between two datetime.time objects
+        """
+        interval = utils.interval(datetime.time(1, 0, 15),
+                                  datetime.time(3, 30, 27))
+        self.assertEqual(interval, 9012)
+
+    def test_mean(self):
+        """
+        Test arithmetic mean from list
+        """
+        mean = utils.mean([])
+        self.assertEqual(mean, 0)
+        mean = utils.mean([1, 2, 3, 4])
+        self.assertEqual(mean, 2.5)
+        mean = utils.mean([-1, -2, -3, -4])
+        self.assertEqual(mean, -2.5)
+
+    def test_group_by_weekday(self):
+        """
+        Test presence entriers grouped by weekday.
+        """
+        user_id = {
+            datetime.date(2013, 10, 1): {
+                'start': datetime.time(9, 0, 0),
+                'end': datetime.time(17, 30, 0),
+            },
+            datetime.date(2013, 10, 2): {
+                'start': datetime.time(11, 0, 0),
+                'end': datetime.time(13, 30, 0),
+            },
+            datetime.date(2013, 10, 5): {
+                'start': datetime.time(8, 30, 0),
+                'end': datetime.time(16, 45, 0),
+            },
+        }
+        result = utils.group_by_weekday(user_id)
+        data = {i: [] for i in range(7)}
+        data[1] = [30600]
+        data[2] = [9000]
+        data[5] = [29700]
+        self.assertDictEqual(result, data)
 
 
 def suite():
