@@ -148,8 +148,10 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         Test interval between two datetime.time objects
         """
-        interval = utils.interval(datetime.time(1, 0, 15),
-                                  datetime.time(3, 30, 27))
+        interval = utils.interval(
+            datetime.time(1, 0, 15),
+            datetime.time(3, 30, 27)
+        )
         self.assertEqual(interval, 9012)
 
     def test_mean(self):
