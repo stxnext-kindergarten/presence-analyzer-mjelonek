@@ -162,30 +162,21 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(mean, 2.5)
         mean = utils.mean([-1, -2, -3, -4])
         self.assertEqual(mean, -2.5)
+        mean = utils.mean([0.5, 1.25, 1.5, 2.13])
+        self.assertEqual(mean, 1.345)
+        mean = utils.mean([1.237, -3.23, -1.775])
+        self.assertEqual(mean, -1.256)
 
     def test_group_by_weekday(self):
         """
         Test presence entriers grouped by weekday.
         """
-        user_id = {
-            datetime.date(2013, 10, 1): {
-                'start': datetime.time(9, 0, 0),
-                'end': datetime.time(17, 30, 0),
-            },
-            datetime.date(2013, 10, 2): {
-                'start': datetime.time(11, 0, 0),
-                'end': datetime.time(13, 30, 0),
-            },
-            datetime.date(2013, 10, 5): {
-                'start': datetime.time(8, 30, 0),
-                'end': datetime.time(16, 45, 0),
-            },
-        }
+        user_id = utils.get_data()[10]
         result = utils.group_by_weekday(user_id)
         data = {i: [] for i in range(7)}
-        data[1] = [30600]
-        data[2] = [9000]
-        data[5] = [29700]
+        data[1] = [30047]
+        data[2] = [24465]
+        data[3] = [23705]
         self.assertDictEqual(result, data)
 
 
