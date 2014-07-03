@@ -163,9 +163,11 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         mean = utils.mean([-1, -2, -3, -4])
         self.assertEqual(mean, -2.5)
         mean = utils.mean([0.5, 1.25, 1.5, 2.13])
-        self.assertEqual(mean, 1.345)
+        self.assertAlmostEqual(mean, 1.345)
         mean = utils.mean([1.237, -3.23, -1.775])
-        self.assertEqual(mean, -1.256)
+        self.assertAlmostEqual(mean, -1.256)
+        mean = utils.mean([5.234, -2.34, 1.113, 3.2412, -0.1853, 0.54, 0.797])
+        self.assertAlmostEqual(mean, 1.1999857)
 
     def test_group_by_weekday(self):
         """
