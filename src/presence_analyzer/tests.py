@@ -106,6 +106,32 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         ]
         self.assertEqual(data, correct_data)
 
+    def test_api_presence_start_end(self):
+        """
+        Test time intervals when user is most often present grouped by weekday.
+        """
+        resp = self.client.get('/api/v1/presence_start_end/5')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(data, [])
+
+        resp = self.client.get('/api/v1/presence_start_end/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 7)
+        correct_data = [
+            [u'Mon', 0, 0],
+            [u'Tue', 34745, 64792],
+            [u'Wed', 33592, 58057],
+            [u'Thu', 38926, 62631],
+            [u'Fri', 0, 0],
+            [u'Sat', 0, 0],
+            [u'Sun', 0, 0]
+        ]
+        self.assertEqual(data, correct_data)
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
@@ -173,7 +199,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
     def test_group_by_weekday(self):
         """
-        Test presence entriers grouped by weekday.
+        Test presence entries grouped by weekday.
         """
         user_id = utils.get_data()[10]
         result = utils.group_by_weekday(user_id)
@@ -181,6 +207,21 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         data[1] = [30047]
         data[2] = [24465]
         data[3] = [23705]
+        self.assertDictEqual(result, data)
+
+    def test_group_start_end_by_weekday(self):
+        """
+        Test start, end presence entries grouped by weekday.
+        """
+        user_id = utils.get_data()[10]
+        result = utils.group_start_end_by_weekday(user_id)
+        data = {i: {'start': [], 'end': []} for i in range(7)}
+        data[1]['start'] = [34745]
+        data[1]['end'] = [64792]
+        data[2]['start'] = [33592]
+        data[2]['end'] = [58057]
+        data[3]['start'] = [38926]
+        data[3]['end'] = [62631]
         self.assertDictEqual(result, data)
 
 
