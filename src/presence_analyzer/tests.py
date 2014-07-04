@@ -75,7 +75,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             [u'Thu', 23705],
             [u'Fri', 0],
             [u'Sat', 0],
-            [u'Sun', 0]
+            [u'Sun', 0],
         ]
         self.assertEqual(data, correct_data)
 
@@ -102,7 +102,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             [u'Thu', 23705],
             [u'Fri', 0],
             [u'Sat', 0],
-            [u'Sun', 0]
+            [u'Sun', 0],
         ]
         self.assertEqual(data, correct_data)
 
@@ -128,7 +128,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             [u'Thu', 38926, 62631],
             [u'Fri', 0, 0],
             [u'Sat', 0, 0],
-            [u'Sun', 0, 0]
+            [u'Sun', 0, 0],
         ]
         self.assertEqual(data, correct_data)
 
@@ -203,10 +203,15 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         user_id = utils.get_data()[10]
         result = utils.group_by_weekday(user_id)
-        data = {i: [] for i in range(7)}
-        data[1] = [30047]
-        data[2] = [24465]
-        data[3] = [23705]
+        data = {
+            0: [],
+            1: [30047],
+            2: [24465],
+            3: [23705],
+            4: [],
+            5: [],
+            6: [],
+        }
         self.assertDictEqual(result, data)
 
     def test_group_start_end_by_weekday(self):
@@ -215,13 +220,15 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         user_id = utils.get_data()[10]
         result = utils.group_start_end_by_weekday(user_id)
-        data = {i: {'start': [], 'end': []} for i in range(7)}
-        data[1]['start'] = [34745]
-        data[1]['end'] = [64792]
-        data[2]['start'] = [33592]
-        data[2]['end'] = [58057]
-        data[3]['start'] = [38926]
-        data[3]['end'] = [62631]
+        data = {
+            0: {'start': [], 'end': []},
+            1: {'start': [34745], 'end': [64792]},
+            2: {'start': [33592], 'end': [58057]},
+            3: {'start': [38926], 'end': [62631]},
+            4: {'start': [], 'end': []},
+            5: {'start': [], 'end': []},
+            6: {'start': [], 'end': []},
+        }
         self.assertDictEqual(result, data)
 
 

@@ -87,8 +87,10 @@ def presence_start_end_view(user_id):
         return []
 
     weekdays = group_start_end_by_weekday(data[user_id])
-    result = [(calendar.day_abbr[weekday],
-               mean(start_end_dict['start']),
-               mean(start_end_dict['end']))
-              for weekday, start_end_dict in weekdays.items()]
+    result = [
+        (calendar.day_abbr[weekday],
+         mean(start_end_dict['start']),
+         mean(start_end_dict['end']))
+        for weekday, start_end_dict in weekdays.items()
+    ]
     return result
