@@ -7,7 +7,13 @@ import calendar
 from flask import redirect
 
 from presence_analyzer.main import app
-from presence_analyzer.utils import jsonify, get_data, mean, group_by_weekday
+from presence_analyzer.utils import (
+    jsonify,
+    get_data,
+    mean,
+    group_by_weekday,
+    group_start_end_by_weekday
+)
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -66,4 +72,25 @@ def presence_weekday_view(user_id):
               for weekday, intervals in weekdays.items()]
 
     result.insert(0, ('Weekday', 'Presence (s)'))
+    return result
+
+
+@app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
+@jsonify
+def presence_start_end_view(user_id):
+    """
+    Returns start, end time when user is most often present grouped by weekday.
+    """
+    data = get_data()
+    if user_id not in data:
+        log.debug('User %s not found!', user_id)
+        return []
+
+    weekdays = group_start_end_by_weekday(data[user_id])
+    result = [
+        (calendar.day_abbr[weekday],
+         mean(start_end_dict['start']),
+         mean(start_end_dict['end']))
+        for weekday, start_end_dict in weekdays.items()
+    ]
     return result
