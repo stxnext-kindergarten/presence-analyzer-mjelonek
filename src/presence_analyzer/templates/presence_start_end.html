@@ -4,7 +4,7 @@
     google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
 {% endblock %}
 {% block getJSON %}
-    $.getJSON("/api/v1/presence_start_end/"+selected_user, function(result) {
+    $.getJSON("{{ url_for('presence_start_end_view', user_id=0) }}" + selected_user, function(result) {
         $.each(result, function(index, value) {
             value[1] = parseToDate(value[1]);
             value[2] = parseToDate(value[2]);

@@ -19,7 +19,7 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("/api/v1/users", function(result) {
+                $.getJSON("{{ url_for('users_view') }}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
                         dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -61,7 +61,11 @@
             </ul>
         </div>
         <div id="content">
-            <h2>Presence mean time by weekday</h2>
+            {% for href, caption in navigation_bar %}
+                {% if href == active_page %}
+                    <h2>{{ caption }}</h2>
+                {% endif %}
+            {% endfor %}
             <p>
                 <select id="user_id" style="display: none">
                     <option value="">--</option>

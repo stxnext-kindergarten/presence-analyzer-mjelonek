@@ -20,7 +20,6 @@ from presence_analyzer.utils import (
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=C0103
 
-
 @app.route('/')
 def mainpage():
     """
@@ -71,10 +70,11 @@ def mean_time_weekday_view(user_id):
 
 @app.route('/api/v1/presence_weekday/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_weekday_view(user_id):
+def presence_weekday_view(user_id=None):
     """
     Returns total presence time of given user grouped by weekday.
     """
+
     data = get_data()
     if user_id not in data:
         log.debug('User %s not found!', user_id)
@@ -86,7 +86,6 @@ def presence_weekday_view(user_id):
 
     result.insert(0, ('Weekday', 'Presence (s)'))
     return result
-
 
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @jsonify
