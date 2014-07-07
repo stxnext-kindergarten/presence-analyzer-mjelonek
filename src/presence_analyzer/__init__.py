@@ -1,4 +1,3 @@
 # -*- coding: utf-8 -*-
-"""
-Init.
-"""
+from .main import app
+from . import views
