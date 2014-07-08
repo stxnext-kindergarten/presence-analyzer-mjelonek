@@ -4,7 +4,7 @@
     google.load("visualization", "1", {packages:["corechart"], 'language': 'en'});
 {% endblock %}
 {% block getJSON %}
-    $.getJSON("{{ url_for('presence_weekday_view', user_id=0) }}"+selected_user, function(result) {
+    $.getJSON("{{ url_for('presence_weekday_view', user_id=0) }}" + selected_user, function(result) {
         var data = google.visualization.arrayToDataTable(result),
             options = {};
 

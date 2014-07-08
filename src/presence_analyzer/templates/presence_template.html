@@ -48,24 +48,25 @@
         <div id="header">
             <h1>Presence analyzer</h1>
             <ul>
-            {% set navigation_bar = [
+            {%- set navigation_bar = [
                     ('presence_weekday.html', 'Presence by weekday'),
                     ('mean_time_weekday.html', 'Presence mean time'),
                     ('presence_start_end.html', 'Presence start-end')
             ] -%}
-            {% set active_page = active_page|default(url_for('presence_page',site='presence_weekday.html')) -%}
-            {% for href, caption in navigation_bar %}
+            {%- set active_page = active_page|default(url_for('presence_page',site='presence_weekday.html')) -%}
+            {%- for href, caption in navigation_bar %}
                 <li{% if href == active_page %} id="selected"{% endif %}>
-                    <a href="{{ url_for('presence_page', site=href) }}">{{ caption|e }}</a></li>
-            {% endfor %}
+                    <a href="{{ url_for('presence_page', site=href) }}">{{ caption|e }}</a>
+                </li>
+            {%- endfor %}
             </ul>
         </div>
         <div id="content">
             {% for href, caption in navigation_bar %}
-                {% if href == active_page %}
+                {%- if href == active_page -%}
                     <h2>{{ caption }}</h2>
-                {% endif %}
-            {% endfor %}
+                {%- endif -%}
+            {%- endfor %}
             <p>
                 <select id="user_id" style="display: none">
                     <option value="">--</option>

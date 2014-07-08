@@ -4,7 +4,7 @@
     google.load("visualization", "1", {packages:["corechart"], 'language': 'pl'});
 {% endblock %}
 {% block getJSON %}
-    $.getJSON("{{ url_for('mean_time_weekday_view', user_id=0) }}"+selected_user, function(result) {
+    $.getJSON("{{ url_for('mean_time_weekday_view', user_id=0) }}" + selected_user, function(result) {
         $.each(result, function(index, value) {
             value[1] = parseToDate(value[1]);
         });
