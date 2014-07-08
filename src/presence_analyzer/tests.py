@@ -7,7 +7,7 @@ import json
 import datetime
 import unittest
 
-from presence_analyzer import main, views, utils
+from presence_analyzer import main, utils
 
 
 TEST_DATA_CSV = os.path.join(
@@ -41,6 +41,36 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 302)
         assert resp.headers['Location'].endswith('/presence_weekday.html')
+
+    def test_presence_page(self):
+        """
+        Test presence page.
+        """
+        resp = self.client.get('/presence_start_end.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('Timeline', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/presence_start_end.html">',
+                      resp.data)
+        resp = self.client.get('/presence_weekday.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('PieChart', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/presence_weekday.html">',
+                      resp.data)
+        resp = self.client.get('/mean_time_weekday.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('ColumnChart', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/mean_time_weekday.html">',
+                      resp.data)
+        resp = self.client.get('/this_site_doesnt_exist.html')
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.content_type, 'text/html')
+        self.assertIn('404 Not Found', resp.data)
 
     def test_api_users(self):
         """
