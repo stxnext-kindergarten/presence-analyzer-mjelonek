@@ -1,8 +1,8 @@
 <%inherit file="presence_template.html"/>
-<%def name="google_load()">
+<%block name="google_load">
     google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
-</%def>
-<%def name="getJSON()">
+</%block>
+<%block name="getJSON">
     $.getJSON("${url_for('presence_start_end_view', user_id=0)}" + selected_user, function(result) {
         $.each(result, function(index, value) {
             value[1] = parseToDate(value[1]);
@@ -28,4 +28,4 @@
         var chart = new google.visualization.Timeline(chart_div[0]);
         chart.draw(data, options);
     });
-</%def>
+</%block>

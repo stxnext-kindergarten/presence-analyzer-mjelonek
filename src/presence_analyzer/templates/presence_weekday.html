@@ -1,8 +1,8 @@
 <%inherit file="presence_template.html"/>
-<%def name="google_load()">
+<%block name="google_load">
     google.load("visualization", "1", {packages:["corechart"], 'language': 'en'});
-</%def>
-<%def name="getJSON()">
+</%block>
+<%block name="getJSON">
     $.getJSON("${url_for('presence_weekday_view', user_id=0)}" + selected_user, function(result) {
         var data = google.visualization.arrayToDataTable(result),
             options = {};
@@ -12,4 +12,4 @@
         var chart = new google.visualization.PieChart(chart_div[0]);
         chart.draw(data, options);
     });
-</%def>
+</%block>
