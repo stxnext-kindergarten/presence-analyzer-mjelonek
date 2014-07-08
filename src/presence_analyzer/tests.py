@@ -50,6 +50,23 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
         self.assertIn('Timeline', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/presence_start_end.html">',
+                      resp.data)
+        resp = self.client.get('/presence_weekday.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('PieChart', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/presence_weekday.html">',
+                      resp.data)
+        resp = self.client.get('/mean_time_weekday.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('ColumnChart', resp.data)
+        self.assertIn('<li id="selected">\n                    '
+                      '<a href="/mean_time_weekday.html">',
+                      resp.data)
         resp = self.client.get('/this_site_doesnt_exist.html')
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(resp.content_type, 'text/html')
