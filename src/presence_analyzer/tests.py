@@ -48,8 +48,12 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/presence_start_end.html')
         self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
+        self.assertIn('Timeline', resp.data)
         resp = self.client.get('/this_site_doesnt_exist.html')
         self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.content_type, 'text/html')
+        self.assertIn('404 Not Found', resp.data)
 
     def test_api_users(self):
         """
