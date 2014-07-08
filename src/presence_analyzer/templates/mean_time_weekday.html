@@ -17,8 +17,7 @@
             hAxis: {title: 'Weekday'}
         };
 
-        var formatter =
-            new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
+        var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
         formatter.format(data, 1);
 
         chart_div.show();
