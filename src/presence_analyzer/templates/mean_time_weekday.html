@@ -1,10 +1,9 @@
-{% extends "presence_template.html" %}
-{% set active_page = "mean_time_weekday.html" %}
-{% block google_load %}
+<%inherit file="presence_template.html"/>
+<%def name="google_load()">
     google.load("visualization", "1", {packages:["corechart"], 'language': 'pl'});
-{% endblock %}
-{% block getJSON %}
-    $.getJSON("{{ url_for('mean_time_weekday_view', user_id=0) }}" + selected_user, function(result) {
+</%def>
+<%def name="getJSON()">
+    $.getJSON("${url_for('mean_time_weekday_view', user_id=0)}" + selected_user, function(result) {
         $.each(result, function(index, value) {
             value[1] = parseToDate(value[1]);
         });
@@ -18,7 +17,8 @@
             hAxis: {title: 'Weekday'}
         };
 
-        var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
+        var formatter =
+            new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
         formatter.format(data, 1);
 
         chart_div.show();
@@ -26,4 +26,4 @@
         var chart = new google.visualization.ColumnChart(chart_div[0]);
         chart.draw(data, options);
     });
-{% endblock %}
+</%def>

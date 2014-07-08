@@ -8,18 +8,18 @@
     <meta name="author" content="STX Next sp. z o.o."/>
     <meta name="viewport" content="width=device-width; initial-scale=1.0">
 
-    <link href="{{ url_for('static', filename='css/normalize.css') }}" media="all" rel="stylesheet" type="text/css" />
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="${url_for('static', filename='css/normalize.css')}" media="all" rel="stylesheet" type="text/css" />
+    <link href="${url_for('static', filename='css/style.css')}" rel="stylesheet" type="text/css" />
 
-    <script src="/static/js/jquery.min.js"></script>
+    <script src="${url_for('static', filename='js/jquery.min.js')}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script type="text/javascript" src="${url_for('static', filename='js/utils.js')}"></script>
     <script type="text/javascript">
-        {% block google_load %}{% endblock %}
+        ${self.google_load()}
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("{{ url_for('users_view') }}", function(result) {
+                $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
                         dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -34,7 +34,7 @@
                         if(selected_user) {
                             loading.show();
                             chart_div.hide();
-                            {% block getJSON %}{% endblock %}
+                            ${self.getJSON()}
                         }
                     }
                 });
@@ -48,25 +48,32 @@
         <div id="header">
             <h1>Presence analyzer</h1>
             <ul>
-            {%- set navigation_bar = [
-                    ('presence_weekday.html', 'Presence by weekday'),
-                    ('mean_time_weekday.html', 'Presence mean time'),
-                    ('presence_start_end.html', 'Presence start-end')
-            ] -%}
-            {%- set active_page = active_page|default(url_for('presence_page',site='presence_weekday.html')) -%}
-            {%- for href, caption in navigation_bar %}
-                <li{% if href == active_page %} id="selected"{% endif %}>
-                    <a href="{{ url_for('presence_page', site=href) }}">{{ caption|e }}</a>
+            <%
+                navigation_bar = [
+                    ('/presence_weekday.html', 'Presence by weekday'),
+                    ('/mean_time_weekday.html', 'Presence mean time'),
+                    ('/presence_start_end.html', 'Presence start-end')
+                ]
+            %>
+            % for href, caption in navigation_bar:
+                % if href == request.path:
+                <li id="selected">
+                    <a href="${href}">${caption}</a>
                 </li>
-            {%- endfor %}
+                % else:
+                <li>
+                    <a href="${href}">${caption}</a>
+                </li>
+                % endif
+            % endfor
             </ul>
         </div>
         <div id="content">
-            {% for href, caption in navigation_bar %}
-                {%- if href == active_page -%}
-                    <h2>{{ caption }}</h2>
-                {%- endif -%}
-            {%- endfor %}
+            % for href, caption in navigation_bar:
+                % if href == request.path:
+                <h2>${caption}</h2>
+                % endif
+            % endfor
             <p>
                 <select id="user_id" style="display: none">
                     <option value="">--</option>
@@ -74,7 +81,7 @@
                 <div id="chart_div" style="display: none">
                 </div>
                 <div id="loading">
-                    <img src="{{ url_for('static', filename='img/loading.gif') }}" />
+                    <img src="${url_for('static', filename='img/loading.gif')}" />
                 </div>
             </p>
         </div>
