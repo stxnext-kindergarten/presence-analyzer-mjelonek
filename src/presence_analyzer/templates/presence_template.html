@@ -15,7 +15,7 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="${url_for('static', filename='js/utils.js')}"></script>
     <script type="text/javascript">
-        ${self.google_load()}
+        <%block name="google_load"/>
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
@@ -34,7 +34,7 @@
                         if(selected_user) {
                             loading.show();
                             chart_div.hide();
-                            ${self.getJSON()}
+                            <%block name="getJSON"/>
                         }
                     }
                 });
