@@ -1,10 +1,9 @@
-{% extends "presence_template.html" %}
-{% set active_page = "presence_start_end.html" %}
-{% block google_load %}
+<%inherit file="presence_template.html"/>
+<%block name="google_load">
     google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
-{% endblock %}
-{% block getJSON %}
-    $.getJSON("{{ url_for('presence_start_end_view', user_id=0) }}" + selected_user, function(result) {
+</%block>
+<%block name="getJSON">
+    $.getJSON("${url_for('presence_start_end_view', user_id=0)}" + selected_user, function(result) {
         $.each(result, function(index, value) {
             value[1] = parseToDate(value[1]);
             value[2] = parseToDate(value[2]);
@@ -29,4 +28,4 @@
         var chart = new google.visualization.Timeline(chart_div[0]);
         chart.draw(data, options);
     });
-{% endblock %}
+</%block>

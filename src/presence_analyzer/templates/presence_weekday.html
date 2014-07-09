@@ -1,10 +1,9 @@
-{% extends "presence_template.html" %}
-{% set active_page = "presence_weekday.html" %}
-{% block google_load %}
+<%inherit file="presence_template.html"/>
+<%block name="google_load">
     google.load("visualization", "1", {packages:["corechart"], 'language': 'en'});
-{% endblock %}
-{% block getJSON %}
-    $.getJSON("{{ url_for('presence_weekday_view', user_id=0) }}" + selected_user, function(result) {
+</%block>
+<%block name="getJSON">
+    $.getJSON("${url_for('presence_weekday_view', user_id=0)}" + selected_user, function(result) {
         var data = google.visualization.arrayToDataTable(result),
             options = {};
 
@@ -13,4 +12,4 @@
         var chart = new google.visualization.PieChart(chart_div[0]);
         chart.draw(data, options);
     });
-{% endblock %}
+</%block>

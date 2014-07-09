@@ -42,9 +42,9 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 302)
         assert resp.headers['Location'].endswith('/presence_weekday.html')
 
-    def test_presence_page(self):
+    def test_presence_start_end_page(self):
         """
-        Test presence page.
+        Test presence start-end page.
         """
         resp = self.client.get('/presence_start_end.html')
         self.assertEqual(resp.status_code, 200)
@@ -53,6 +53,11 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertIn('<li id="selected">\n                    '
                       '<a href="/presence_start_end.html">',
                       resp.data)
+
+    def test_presence_weekday_page(self):
+        """
+        Test presence weekday page.
+        """
         resp = self.client.get('/presence_weekday.html')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
@@ -60,6 +65,11 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertIn('<li id="selected">\n                    '
                       '<a href="/presence_weekday.html">',
                       resp.data)
+
+    def test_presence_mean_time_page(self):
+        """
+        Test presence mean time page.
+        """
         resp = self.client.get('/mean_time_weekday.html')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'text/html; charset=utf-8')
@@ -67,6 +77,11 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertIn('<li id="selected">\n                    '
                       '<a href="/mean_time_weekday.html">',
                       resp.data)
+
+    def test_not_found_page(self):
+        """
+        Test 404 not found page.
+        """
         resp = self.client.get('/this_site_doesnt_exist.html')
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(resp.content_type, 'text/html')
