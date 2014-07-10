@@ -5,11 +5,11 @@ Helper functions used in views.
 
 import csv
 import locale
-import operator
 from json import dumps
 from functools import wraps
 from datetime import datetime
 from urllib import urlopen
+from threading import Lock
 
 from flask import Response
 from lxml import etree
@@ -18,6 +18,9 @@ from presence_analyzer.main import app
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=C0103
+
+CACHE = {}
+LOCK = Lock()
 
 
 def jsonify(function):
@@ -34,6 +37,35 @@ def jsonify(function):
     return inner
 
 
+def cache(seconds):
+    """
+    Caches the return content of a function.
+    """
+    def decorator(function):
+        def inner():
+            global CACHE
+            if not CACHE or (datetime.now() - CACHE['time']).seconds > seconds:
+                CACHE = {
+                    'time': datetime.now(),
+                    'data': function(),
+                }
+            return CACHE['data']
+        return inner
+    return decorator
+
+
+def lock(function):
+    """
+    Locks function.
+    """
+    def inner():
+        with LOCK:
+            return function()
+    return inner
+
+
+@lock
+@cache(600)
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
@@ -69,7 +101,6 @@ def get_data():
                 log.debug('Problem with line %d: ', i, exc_info=True)
 
             data.setdefault(user_id, {})[date] = {'start': start, 'end': end}
-
     return data
 
 
