@@ -19,10 +19,12 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("${url_for('users_view')}", function(result) {
+                var avatar_data = {}
+                $.getJSON("${url_for('users_xml_view')}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
-                        dropdown.append($("<option />").val(this.user_id).text(this.name));
+                        dropdown.append($("<option />").val(this.id).text(this.name));
+                        avatar_data[this.id] = this.avatar;
                     });
                     dropdown.show();
                     loading.hide();
@@ -30,11 +32,20 @@
                 $('#user_id').change(function(){
                     var selected_user = $("#user_id").val();
                     var chart_div = $('#chart_div');
+                    var avatar_div = $('#user_avatar');
+                    var error_div = $('#error');
+
                     if(selected_user) {
                         if(selected_user) {
                             loading.show();
                             chart_div.hide();
+                            avatar_div.hide();
+                            error_div.hide();
+
                             <%block name="getJSON"/>
+
+                            avatar_div.children('img').attr('src', avatar_data[selected_user]);
+                            avatar_div.show();
                         }
                     }
                 });
@@ -78,7 +89,13 @@
                 <select id="user_id" style="display: none">
                     <option value="">--</option>
                 </select>
+                <div id="user_avatar" style="display:none">
+                    <img src=""/>
+                </div>
                 <div id="chart_div" style="display: none">
+                </div>
+                <div id="error" style="display: none">
+                    <h2>This user has no data!</h2>
                 </div>
                 <div id="loading">
                     <img src="${url_for('static', filename='img/loading.gif')}" />

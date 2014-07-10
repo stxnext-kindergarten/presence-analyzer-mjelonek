@@ -11,7 +11,21 @@ from presence_analyzer import main, utils
 
 
 TEST_DATA_CSV = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    'runtime',
+    'data',
+    'test_data.csv'
+)
+
+TEST_DATA_XML = os.path.join(
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    'runtime',
+    'data',
+    'test_xml_data.xml'
 )
 
 
@@ -26,6 +40,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
         self.client = main.app.test_client()
 
     def tearDown(self):
@@ -97,6 +112,29 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+
+    def test_api_xml_users(self):
+        """
+        Test xml users listing.
+        """
+        resp = self.client.get('/api/v2/users')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 2)
+        sample_data = [
+            {
+                u'id':  141,
+                u'name': u'Adam P.',
+                u'avatar': u'https://intranet.stxnext.pl/api/images/users/141',
+            },
+            {
+                u'id': 176,
+                u'name': u'Adrian K.',
+                u'avatar': u'https://intranet.stxnext.pl/api/images/users/176',
+            },
+        ]
+        self.assertEqual(data, sample_data)
 
     def test_api_mean_time_weekday(self):
         """
@@ -188,6 +226,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
 
     def tearDown(self):
         """
@@ -207,6 +246,17 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
+
+    def test_get_xml_data(self):
+        """
+        Test parsing XML file.
+        """
+        data = utils.get_xml_data()
+        self.assertIsInstance(data, list)
+        sample_avatar = 'https://intranet.stxnext.pl/api/images/users/141'
+        self.assertEqual(sample_avatar, data[0]['avatar'])
+        sample_name = 'Adam P.'
+        self.assertEqual(sample_name, data[0]['name'])
 
     def test_seconds_since_midnight(self):
         """

@@ -4,11 +4,15 @@ Helper functions used in views.
 """
 
 import csv
+import locale
+import operator
 from json import dumps
 from functools import wraps
 from datetime import datetime
+from urllib import urlopen
 
 from flask import Response
+from lxml import etree
 
 from presence_analyzer.main import app
 
@@ -67,6 +71,39 @@ def get_data():
             data.setdefault(user_id, {})[date] = {'start': start, 'end': end}
 
     return data
+
+
+def get_xml_data():
+    """
+    Extracts user data from XML file.
+    """
+    data = {}
+    with open(app.config['DATA_XML'], 'r') as xmlfile:
+        tree = etree.parse(xmlfile)
+        host = tree.findtext('./server/host')
+        protocol = tree.findtext('./server/protocol')
+        url = '{0}://{1}'.format(protocol, host)
+
+        users = tree.findall('./users/user')
+        locale.setlocale(locale.LC_ALL, 'pl_PL.UTF-8')
+        users.sort(key=lambda k: k.findtext('name'), cmp=locale.strcoll)
+        locale.setlocale(locale.LC_ALL, (None, None))
+
+        data = [{
+            'id': int(user.get('id')),
+            'name': user.findtext('name'),
+            'avatar': '{0}{1}'.format(url, user.findtext('avatar')),
+        } for user in users]
+
+    return data
+
+
+def update_xml_data():
+    """
+    Updates local xml file with newest one.
+    """
+    with open('runtime/data/sample_xml_data.xml', 'wb') as xmlfile:
+        xmlfile.write(urlopen('http://sargo.bolt.stxnext.pl/users.xml').read())
 
 
 def group_by_weekday(items):
