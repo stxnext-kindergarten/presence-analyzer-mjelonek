@@ -19,6 +19,15 @@ TEST_DATA_CSV = os.path.join(
     'test_data.csv'
 )
 
+TEST_DATA_CSV_CACHE = os.path.join(
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    'runtime',
+    'data',
+    'test_data_cache.csv'
+)
+
 TEST_DATA_XML = os.path.join(
     os.path.dirname(__file__),
     '..',
@@ -246,6 +255,24 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(data[10][sample_date]['start'],
                          datetime.time(9, 39, 5))
+
+    def test_get_data_cache(self):
+        """
+        Test caching data.
+        """
+        data = utils.get_data()
+        self.assertDictEqual(utils.CACHE['data'], data)
+
+        main.app.config.update({'DATA_CSV': TEST_DATA_CSV_CACHE})
+        data = utils.get_data()
+        self.assertDictEqual(utils.CACHE['data'], data)
+
+        utils.CACHE = {}
+        data = utils.get_data()
+        self.assertDictEqual(utils.CACHE['data'], data)
+
+        main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        utils.CACHE = {}
 
     def test_get_xml_data(self):
         """
