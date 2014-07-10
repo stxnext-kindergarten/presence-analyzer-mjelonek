@@ -267,9 +267,10 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         data = utils.get_data()
         self.assertDictEqual(utils.CACHE['data'], data)
 
+        old_cache = utils.CACHE
         utils.CACHE = {}
         data = utils.get_data()
-        self.assertDictEqual(utils.CACHE['data'], data)
+        self.assertNotEqual(utils.CACHE['data'], old_cache)
 
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
         utils.CACHE = {}
